@@ -1,7 +1,6 @@
 require 'slack-ruby-bot'
-require 'date'
-require 'digest'
-require 'dotenv/load'
+
+require_relative 'services/stand_up'
 
 class TeamBot < SlackRubyBot::Bot
   help do
@@ -15,42 +14,9 @@ class TeamBot < SlackRubyBot::Bot
   end
 
   command 'stand up', 'standup' do |client, data, match|
-    message = "*Next Standup => #{stand_up_time}*\n<@#{select_user}> will be leading this stand up"
+    message = StandUp.new.call
 
     client.say(text: message, channel: data.channel)
-  end
-
-  class << self
-    STAND_UP_TIME = { hour: 9, minute: 30 }
-
-    def select_user
-      env_team_list = ENV['TEAM_MEMBERS']
-      raise "Missing team member list in .env file" unless env_team_list
-      raise "Team member list in .env file is empty" if env_team_list.length.zero?
-
-      team_list = env_team_list.split
-      hex = Digest::MD5.hexdigest(stand_up_date.to_s).to_i(16)
-      selected_index = hex.to_s.split('').slice(0,2).join.to_i % team_list.length
-
-      user = team_list[selected_index]
-      ENV[user]
-    end
-
-    def stand_up_date
-      @stand_up_date ||= has_stand_up_happened? ? Date.today : next_stand_up_date
-    end
-
-    def stand_up_time
-      "#{stand_up_date.strftime('%A, %e %B')} #{STAND_UP_TIME[:hour]}:#{STAND_UP_TIME[:minute]}am"
-    end
-
-    def has_stand_up_happened?
-      Time.now.hour < STAND_UP_TIME[:hour] && Time.now.min <= STAND_UP_TIME[:minute]
-    end
-
-    def next_stand_up_date
-      Date.today.friday? ? Date.today + 3 : Date.today + 1
-    end
   end
 end
 
