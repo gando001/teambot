@@ -4,6 +4,16 @@ require 'digest'
 require 'dotenv/load'
 
 class TeamBot < SlackRubyBot::Bot
+  help do
+    title 'Team Bot'
+    desc 'This bot provides utilities to help your team'
+
+    command 'stand up' do
+      desc 'Let\'s you know when the next stand up is and who will be leading it'
+      long_desc 'Randomly assigns a team member to lead the next stand up.\nNote you can use _stand up_ or _standup_'
+    end
+  end
+
   command 'stand up', 'standup' do |client, data, match|
     message = "*Next Standup => #{stand_up_time}*\n<@#{select_user}> will be leading this stand up"
 
