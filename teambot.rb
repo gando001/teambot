@@ -21,16 +21,19 @@ class TeamBot < SlackRubyBot::Bot
   end
 
   class << self
-    TEAM_MEMBERS = {
-      # INSERT EMAIL ADDRESS => USERID
-    }.freeze
     STAND_UP_TIME = { hour: 9, minute: 30 }
 
     def select_user
-      hex = Digest::MD5.hexdigest(stand_up_date.to_s).to_i(16)
-      selected_index = hex.to_s.split('').slice(0,2).join.to_i % TEAM_MEMBERS.length
+      env_team_list = ENV['TEAM_MEMBERS']
+      raise "Missing team member list in .env file" unless env_team_list
+      raise "Team member list in .env file is empty" if env_team_list.length.zero?
 
-      TEAM_MEMBERS.to_a[selected_index].last
+      team_list = env_team_list.split
+      hex = Digest::MD5.hexdigest(stand_up_date.to_s).to_i(16)
+      selected_index = hex.to_s.split('').slice(0,2).join.to_i % team_list.length
+
+      user = team_list[selected_index]
+      ENV[user]
     end
 
     def stand_up_date
