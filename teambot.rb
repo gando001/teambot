@@ -9,7 +9,12 @@ class TeamBot < SlackRubyBot::Bot
 
     command 'stand up' do
       desc 'Let\'s you know when the next stand up is and who will be leading it'
-      long_desc 'Randomly assigns a team member to lead the next stand up.\nNote you can use _stand up_ or _standup_'
+      long_desc 'Randomly assigns a team member to lead the next stand up.'
+    end
+
+    command 'standup' do
+      desc 'Let\'s you know when the next stand up is and who will be leading it'
+      long_desc 'Randomly assigns a team member to lead the next stand up.'
     end
   end
 
