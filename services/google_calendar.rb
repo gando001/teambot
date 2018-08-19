@@ -41,7 +41,7 @@ class GoogleCalendar
   end
 
   def no_events_message
-    today? ? "#{slack_user_name} has no meetings today" : "#{slack_user_name} should be available, there is nothing scheduled in their calendar"
+    today? ? "#{slack_user_name} has no meetings today" : "#{slack_user_name} is available, there is nothing scheduled in their calendar"
   end
 
   def process_calendar_events
@@ -50,8 +50,8 @@ class GoogleCalendar
       end_date = event.end.date || event.end.date_time
       summary = event.summary || "private"
 
-      start_date = start_date.strftime('%I:%M')
-      end_date = end_date.strftime('%I:%M')
+      start_date = start_date.strftime('%H:%M')
+      end_date = end_date.strftime('%H:%M')
 
       "#{start_date} - #{end_date} #{summary}\n"
     end
