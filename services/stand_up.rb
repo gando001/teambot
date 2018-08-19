@@ -28,15 +28,15 @@ class StandUp
   end
 
   def stand_up_date
-    @stand_up_date ||= has_stand_up_happened? ? next_stand_up_date : Date.today
+    @stand_up_date ||= stand_up_for_today? ? Date.today : next_stand_up_date
   end
 
   def stand_up_time
     "#{stand_up_date.strftime('%A, %e %B')} #{STAND_UP_TIME[:hour]}:#{STAND_UP_TIME[:minute]}am"
   end
 
-  def has_stand_up_happened?
-    Time.now.hour < STAND_UP_TIME[:hour] && Time.now.min <= STAND_UP_TIME[:minute]
+  def stand_up_for_today?
+    Time.now.hour <= STAND_UP_TIME[:hour] && Time.now.min <= STAND_UP_TIME[:minute]
   end
 
   def next_stand_up_date
