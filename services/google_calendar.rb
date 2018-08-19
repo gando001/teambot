@@ -4,7 +4,7 @@ require 'googleauth/stores/file_token_store'
 require 'fileutils'
 require 'date'
 
-class Calendar
+class GoogleCalendar
   OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
   APPLICATION_NAME = 'Teambot'.freeze
   CREDENTIALS_PATH = 'credentials.json'.freeze

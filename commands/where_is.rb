@@ -1,6 +1,6 @@
-require_relative '../services/google'
+require_relative '../services/google_calendar'
 
-class GoogleCalendar < SlackRubyBot::Commands::Base
+class WhereIs < SlackRubyBot::Commands::Base
   command 'where is'
 
   help do
@@ -10,7 +10,7 @@ class GoogleCalendar < SlackRubyBot::Commands::Base
   end
 
   def self.call(client, data, match)
-    message = Calendar.new(match[:expression]).call
+    message = GoogleCalendar.new(match[:expression]).call
 
     client.web_client.chat_postEphemeral(text: message, channel: data.channel, user: data.user)
   end
