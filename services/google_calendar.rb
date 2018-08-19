@@ -103,7 +103,7 @@ class GoogleCalendar
       if today?
         Time.now.strftime('%Y-%m-%dT23:59:00%z')
       else
-        Time.now.strftime('%Y-%m-%dT%H:%M:%S%z')
+        (Time.now + 60).strftime('%Y-%m-%dT%H:%M:%S%z') # add 60 seconds
       end
     end
   end
