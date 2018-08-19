@@ -11,28 +11,61 @@ class Calendar
   TOKEN_PATH = 'token.yaml'.freeze
   SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY
 
+  TEAM = {
+    U4MSAQLP9: 'chloe.kyrke-smith@xero.com',
+    U56QVKPK7: 'ellie.coyle@xero.com',
+    U56QUQ29K: 'guido.vonmulert@xero.com',
+    U53BXLPQD: 'shushruth.joshi@xero.com',
+    U8MSFUEAK: 'keertika.chandola@xero.com',
+    U7YPZE0R2: 'kunal.madhav@xero.com',
+    U565CDQBB: 'matt.button@xero.com',
+  }
+
   def initialize(expression)
     @expression = expression
   end
 
   def call
-    # check expression if missing
-    # cehck if random person
-
-    process_calendar_events
+    if unknown_command?
+      usage_message
+    elsif no_events?
+      no_events_message
+    else
+      process_calendar_events
+    end
   end
 
   private
 
+  def unknown_command?
+    @expression.nil? || person.nil?
+  end
+
+  def usage_message
+    "Usage: where is @name _today_"
+  end
+
+  def no_events?
+    calendar_events.items.empty?
+  end
+
+  def no_events_message
+    today? ? "#{slack_user_name} has no meetings today" : "#{slack_user_name} should be available, there is nothing scheduled in their calendar"
+  end
+
   def process_calendar_events
-    if calendar_events.items.empty?
-      'No upcoming events found'
-    else
-      calendar_events.items.collect do |event|
-        start = event.start.date || event.start.date_time
-        "#{event.summary} (#{start})"
-      end
+    events = calendar_events.items.collect do |event|
+      start_date = event.start.date || event.start.date_time
+      end_date = event.end.date || event.end.date_time
+      summary = event.summary || "private"
+
+      start_date = start_date.strftime('%I:%M')
+      end_date = end_date.strftime('%I:%M')
+
+      "#{start_date} - #{end_date} #{summary}\n"
     end
+
+    "```#{events.join}```"
   end
 
   def calendar_events
@@ -46,12 +79,18 @@ class Calendar
   end
 
   def person
-    @person ||= begin
-      @expression.split(' ').first
+    @person ||= TEAM[slack_id.to_sym]
+  end
 
-      #search for person
-      'kunal.madhav@xero.com'
+  def slack_id
+    @slack_id ||= begin
+      name = @expression.split(' ').first
+      name[2..-2]
     end
+  end
+
+  def slack_user_name
+    @slack_user_name ||= "<@#{slack_id}>"
   end
 
   def today?
@@ -71,7 +110,7 @@ class Calendar
   def time_max
     @time_max ||= begin
       if today?
-        time_max = Time.now.strftime('%Y-%m-%dT23:59:00%z')
+        Time.now.strftime('%Y-%m-%dT23:59:00%z')
       else
         Time.now.strftime('%Y-%m-%dT%H:%M:%S%z')
       end

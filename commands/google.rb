@@ -6,7 +6,6 @@ class GoogleCalendar < SlackRubyBot::Commands::Base
   def self.call(client, data, match)
     message = Calendar.new(match[:expression]).call
 
-    # change to private message
-    client.say(text: message, channel: data.channel)
+    client.web_client.chat_postEphemeral(text: message, channel: data.channel, user: data.user)
   end
 end
