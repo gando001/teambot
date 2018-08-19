@@ -11,35 +11,72 @@ class Calendar
   TOKEN_PATH = 'token.yaml'.freeze
   SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY
 
-  def call(person = nil, today = nil)
-    if today
-      time_min = Time.now.strftime('%Y-%m-%dT%H:%M:%S%z')
-      time_max = time_min
-    else
-      time_min = Time.now.strftime('%Y-%m-%dT00:00:00%z')
-      time_max = Time.now.strftime('%Y-%m-%dT23:59:00%z')
-    end
+  def initialize(expression)
+    @expression = expression
+  end
 
-    calendar_id = person || 'kunal.madhav@xero.com'
-    response = service.list_events(
-      calendar_id,
-      single_events: true,
-      order_by: 'startTime',
-      time_min: time_min,
-      time_max: time_max
-    )
+  def call
+    # check expression if missing
+    # cehck if random person
 
-    if response.items.empty?
+    process_calendar_events
+  end
+
+  private
+
+  def process_calendar_events
+    if calendar_events.items.empty?
       'No upcoming events found'
     else
-      response.items.collect do |event|
+      calendar_events.items.collect do |event|
         start = event.start.date || event.start.date_time
         "#{event.summary} (#{start})"
       end
     end
   end
 
-  private
+  def calendar_events
+    @calendar_events ||= service.list_events(
+      person,
+      single_events: true,
+      order_by: 'startTime',
+      time_min: time_min,
+      time_max: time_max
+    )
+  end
+
+  def person
+    @person ||= begin
+      @expression.split(' ').first
+
+      #search for person
+      'kunal.madhav@xero.com'
+    end
+  end
+
+  def today?
+    @expression.split(' ').length == 2
+  end
+
+  def time_min
+    @time_min ||= begin
+      if today?
+        Time.now.strftime('%Y-%m-%dT00:00:00%z')
+      else
+        Time.now.strftime('%Y-%m-%dT%H:%M:%S%z')
+      end
+    end
+  end
+
+  def time_max
+    @time_max ||= begin
+      if today?
+        time_max = Time.now.strftime('%Y-%m-%dT23:59:00%z')
+      else
+        Time.now.strftime('%Y-%m-%dT%H:%M:%S%z')
+      end
+    end
+  end
 
   def service
     @service ||= initialize_api
