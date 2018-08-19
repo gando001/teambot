@@ -28,7 +28,7 @@ class StandUp
   end
 
   def stand_up_date
-    @stand_up_date ||= has_stand_up_happened? ? Date.today : next_stand_up_date
+    @stand_up_date ||= has_stand_up_happened? ? next_stand_up_date : Date.today
   end
 
   def stand_up_time
