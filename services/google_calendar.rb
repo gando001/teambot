@@ -3,6 +3,7 @@ require 'googleauth'
 require 'googleauth/stores/file_token_store'
 require 'fileutils'
 require 'date'
+require 'dotenv/load'
 
 class GoogleCalendar
   OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
@@ -10,16 +11,6 @@ class GoogleCalendar
   CREDENTIALS_PATH = 'credentials.json'.freeze
   TOKEN_PATH = 'token.yaml'.freeze
   SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY
-
-  TEAM = {
-    U4MSAQLP9: 'chloe.kyrke-smith@xero.com',
-    U56QVKPK7: 'ellie.coyle@xero.com',
-    U56QUQ29K: 'guido.vonmulert@xero.com',
-    U53BXLPQD: 'shushruth.joshi@xero.com',
-    U8MSFUEAK: 'keertika.chandola@xero.com',
-    U7YPZE0R2: 'kunal.madhav@xero.com',
-    U565CDQBB: 'matt.button@xero.com',
-  }
 
   def initialize(expression)
     @expression = expression
@@ -79,7 +70,7 @@ class GoogleCalendar
   end
 
   def person
-    @person ||= TEAM[slack_id.to_sym]
+    @person ||= ENV[slack_id]
   end
 
   def slack_id
