@@ -16,12 +16,16 @@ class StandUp
   private
 
   def team_list
-    @team_list ||= ENV_TEAM_LIST.split
+    @team_list ||= begin
+      list = ENV_TEAM_LIST.split
+
+      stand_up_date.day % 2 == 0 ? list : list.reverse
+    end
   end
 
   def select_user
     hex = Digest::MD5.hexdigest(stand_up_date.to_s).to_i(16)
-    selected_index = hex.to_s.split('').slice(0,2).join.to_i % team_list.length
+    selected_index = hex * stand_up_date.yday * stand_up_date.cwday % team_list.length
 
     team_list[selected_index]
   end
