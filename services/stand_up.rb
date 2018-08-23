@@ -39,7 +39,9 @@ class StandUp
   end
 
   def stand_up_for_today?
-    Time.now.hour <= STAND_UP_TIME[:hour] && Time.now.min <= STAND_UP_TIME[:minute]
+    current_hour = Time.now.hour
+
+    current_hour <= STAND_UP_TIME[:hour] || current_hour == STAND_UP_TIME[:hour] && Time.now.min <= STAND_UP_TIME[:minute]
   end
 
   def next_stand_up_date
