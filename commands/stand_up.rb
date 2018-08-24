@@ -1,4 +1,5 @@
 require_relative '../services/stand_up'
+require_relative '../services/leave_calendar'
 
 class Standup < SlackRubyBot::Commands::Base
   command 'stand up'
@@ -11,7 +12,11 @@ class Standup < SlackRubyBot::Commands::Base
   end
 
   def self.call(client, data, match)
-    message = StandUp.new.call
+    result = StandUp.new.call
+    stand_up_message = result.first
+    leave_message = LeaveCalendar.new(result.last).call
+
+    message = [stand_up_message, leave_message].join("\n\n")
 
     client.say(text: message, channel: data.channel)
   end

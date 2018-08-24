@@ -10,7 +10,7 @@ class StandUp
     raise "Missing team member list in .env file" unless ENV_TEAM_LIST
     raise "Team member list in .env file is empty" if ENV_TEAM_LIST.length.zero?
 
-    "*Next Standup => #{stand_up_time}*\n<@#{select_user}> will be leading this stand up"
+    ["*Next Standup => #{stand_up_time}*\n<@#{select_user}> will be leading this stand up", stand_up_date]
   end
 
   private
