@@ -10,7 +10,7 @@ class StandUp
     raise "Missing team member list in .env file" unless ENV_TEAM_LIST
     raise "Team member list in .env file is empty" if ENV_TEAM_LIST.length.zero?
 
-    ["*Next Standup => #{stand_up_time}*\n<@#{select_user}> will be leading this stand up", stand_up_date]
+    ["*Standup:*\n#{stand_up_time}\n<@#{select_user}> will be leading this stand up", stand_up_date]
   end
 
   private
@@ -35,7 +35,7 @@ class StandUp
   end
 
   def stand_up_time
-    "#{stand_up_date.strftime('%A, %e %B')} #{STAND_UP_TIME[:hour]}:#{STAND_UP_TIME[:minute]}am"
+    "#{stand_up_date.strftime('%A')} #{STAND_UP_TIME[:hour]}:#{STAND_UP_TIME[:minute]}am"
   end
 
   def stand_up_for_today?
