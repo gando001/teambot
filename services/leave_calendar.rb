@@ -11,8 +11,8 @@ class LeaveCalendar
   SCOPE = Google::Apis::CalendarV3::AUTH_CALENDAR_READONLY
   CALENDAR = 'xero.com_ubk9v43pto0ha50l0i6rvjjves@group.calendar.google.com'
 
-  def initialize(date)
-    @date = date
+  def initialize(stand_up_date)
+    @stand_up_date = stand_up_date
   end
 
   def call
@@ -42,11 +42,11 @@ class LeaveCalendar
   end
 
   def time_min
-    @time_min ||= @date.strftime('%Y-%m-%dT00:00:00%z')
+    @time_min ||= @stand_up_date.strftime('%Y-%m-%dT00:00:00%z')
   end
 
   def time_max
-    @time_max ||= @date.strftime('%Y-%m-%dT23:59:00%z')
+    @time_max ||= @stand_up_date.strftime('%Y-%m-%dT23:59:00%z')
   end
 
   def service
