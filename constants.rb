@@ -5,7 +5,7 @@ require 'dotenv/load'
 
 ENV_TEAM_LIST = ENV['TEAM_MEMBERS']
 
-STAND_UP_TIME = { hour: 9, minute: 30 }
+STAND_UP_TIME = { hour: 9, minute: 45 }
 
 OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
 APPLICATION_NAME = 'Teambot'.freeze
